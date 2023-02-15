@@ -1,0 +1,32 @@
+#Spring:
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    username:
+#    password:
+#    hikari:
+#      jdbc-url:
+#
+#  jpa:
+#    database-platform: org.hibernate.dialect.postgres
+#    hibernate:
+#      ddl-auto: update
+spring:
+  datasource:
+    url: jdbc:h2:file:~/uber_deluxe
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+
+
+server:
+  port: 9092
