@@ -1,13 +1,17 @@
 package com.paragon.uberdeluxe.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.jsonpointer.JsonPointer;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.ReplaceOperation;
 import com.paragon.uberdeluxe.data.dto.request.RegisterPassengerRequest;
 import com.paragon.uberdeluxe.data.dto.response.RegisterResponse;
 import com.paragon.uberdeluxe.data.models.AppUser;
 import com.paragon.uberdeluxe.data.models.Passenger;
-import com.paragon.uberdeluxe.data.repositories.PassengerRepository;
+import com.paragon.uberdeluxe.exception.BusinessLogicException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
@@ -26,8 +31,7 @@ class PassengerServiceImplTest {
     @Autowired
     private PassengerService passengerService;
     private RegisterPassengerRequest request;
-    @Autowired
-    private PassengerRepository passengerRepository;
+
 
     @BeforeEach
     void setUp(){
@@ -39,11 +43,6 @@ class PassengerServiceImplTest {
 
     @Test
     void registerTest(){
-        RegisterPassengerRequest request = new RegisterPassengerRequest();
-        request.setPassword("password");
-        request.setName("test");
-        request.setEmail("email");
-
         RegisterResponse response = passengerService.register(request);
         assertThat(response).isNotNull();
         assertThat(response.getCode())
@@ -60,13 +59,25 @@ class PassengerServiceImplTest {
     }
 
     @Test
-    public void updateTest(){
+    public void updateTest() throws JsonProcessingException, JsonPointerException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree("234775757575");
         JsonPatch update = new JsonPatch(List.of(
-                new ReplaceOperation(new JsonPointer("/email"), "email")
+                new ReplaceOperation(new JsonPointer("/phoneNumber"),
+                        node)
         ));
         var response = passengerService.register(request);
-        var updatePass = passengerService.update(re);
-        assertThat(updatePass)
+        var updatePass = passengerService.update(response.getId(), update);
+        assertThat(updatePass).isNotNull();
+        assertThat(updatePass.getPhonenumber()).isNotNull();
+    }
+
+    @Test
+    public void deletePassengerTest() {
+        var response = passengerService.register(request);
+        passengerService.deletePassenger(response.getId());
+        assertThrows(BusinessLogicException.class, ()->
+                passengerService.getPassengerById(response.getId()));
     }
 
 }
