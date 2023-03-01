@@ -12,8 +12,9 @@ import com.paragon.uberdeluxe.data.repositories.PassengerRepository;
 import com.paragon.uberdeluxe.exception.BusinessLogicException;
 import com.paragon.uberdeluxe.mapper.Mapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +23,18 @@ import java.time.LocalDateTime;
 @Service
 @Slf4j
 public class PassengerServiceImpl implements PassengerService{
+    private final PassengerRepository repository;
+    private static final int NUMBER_OF_ITEMS_PER_PAGE = 10;
 
-    @Autowired
-    private PassengerRepository repository;
-    private static final int NUMBER_OF_ITEMS_PER_PAGE = 3;
+    public PassengerServiceImpl(PassengerRepository repository) {
+        this.repository = repository;
+    }
 
 
     @Override
     public RegisterResponse register(RegisterPassengerRequest request) {
         AppUser user = Mapper.map(request);
-        user.setCreatedAt(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now().toString());
         Passenger passenger = new Passenger();
         passenger.setUserDetails(user);
         Passenger saved = repository.save(passenger);
@@ -64,11 +67,13 @@ public class PassengerServiceImpl implements PassengerService{
 
     }
 
-//    @Override
-//    public Page<Passenger> getAllPassenger() {
-//        Page
-//        return;
-//    }
+    @Override
+    public Page<Passenger> getAllPassenger(int pageNumber) {
+        if(pageNumber<1) pageNumber = 0;
+        else pageNumber=pageNumber-1;
+        Pageable pageable = PageRequest.of(pageNumber, NUMBER_OF_ITEMS_PER_PAGE);
+        return repository.findAll(pageable);
+    }
 
     @Override
     public void deletePassenger(Long passengerId) {

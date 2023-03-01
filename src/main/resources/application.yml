@@ -12,13 +12,12 @@
 #      ddl-auto: update
 spring:
   datasource:
-    url: jdbc:h2:file:~/uber_deluxe
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://localhost/uber_deluxe?createDatabaseIfNotExist=true
+    username: jojololamartins686@gmail.com
+    password: 1998free
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: com.mysql.cj.jdbc.Driver
     hibernate:
       ddl-auto: update
 
@@ -26,6 +25,9 @@ spring:
   h2:
     console:
       enabled: true
+
+  config:
+    import:
 
 
 server:

@@ -25,7 +25,7 @@ public class AppUser {
     private String password;
     @Transient
     private MultipartFile profileImage;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
 
 }

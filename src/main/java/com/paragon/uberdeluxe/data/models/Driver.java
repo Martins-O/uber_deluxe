@@ -1,16 +1,14 @@
 package com.paragon.uberdeluxe.data.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
