@@ -5,7 +5,6 @@ import com.cloudinary.utils.ObjectUtils;
 import com.paragon.uberdeluxe.exception.ImageUploadException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +24,6 @@ public class CloudinaryCloudServiceImpl implements CloudinaryCloudService{
         try {
             Map<?, ?> response =
                     cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
-            log.info("Response->{}", response);
             return response.get("url").toString();
         }catch (IOException e) {
             throw new ImageUploadException(e.getMessage());
